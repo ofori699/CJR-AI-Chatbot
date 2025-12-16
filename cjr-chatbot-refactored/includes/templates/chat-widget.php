@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
     </div>
     <div id="chatbot-messages" role="log" aria-live="polite" aria-atomic="false">
         <div class="chat-message bot-message">
-            <?php echo esc_html(cjrChatbot.strings.welcome); ?>
+            <?php esc_html_e('👋 Hello! How can I help you with the Center for Justice Research today?', 'cjr-chatbot'); ?>
         </div>
     </div>
     <div id="chatbot-input-area">

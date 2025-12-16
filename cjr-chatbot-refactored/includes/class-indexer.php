@@ -130,44 +130,60 @@ class CJR_Chatbot_Indexer {
             wp_send_json_error(array('message' => __('Unauthorized', 'cjr-chatbot')));
         }
         
-        $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
-        $batch_size = 10; // Process 10 posts per request
-        
-        $indexed_types = get_option('cjr_chatbot_indexed_types', array('post', 'page', 'cjr_faq'));
-        
-        $posts = get_posts(array(
-            'post_type' => $indexed_types,
-            'posts_per_page' => $batch_size,
-            'offset' => $offset,
-            'post_status' => 'publish',
-            'orderby' => 'ID',
-            'order' => 'ASC'
-        ));
-        
-        $success = 0;
-        $failed = 0;
-        
-        foreach ($posts as $post) {
-            if ($this->index_single_post($post->ID, $post)) {
-                $success++;
-            } else {
-                $failed++;
+        try {
+            // Check API key
+            $api_key = get_option('cjr_chatbot_api_key', '');
+            if (empty($api_key)) {
+                wp_send_json_error(array('message' => __('API key not configured. Please set it in Settings.', 'cjr-chatbot')));
             }
             
-            // Small delay to avoid rate limiting
-            usleep(100000); // 0.1 second
+            $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
+            $batch_size = 10; // Process 10 posts per request
+            
+            $indexed_types = get_option('cjr_chatbot_indexed_types', array('post', 'page', 'cjr_faq'));
+            
+            $posts = get_posts(array(
+                'post_type' => $indexed_types,
+                'posts_per_page' => $batch_size,
+                'offset' => $offset,
+                'post_status' => 'publish',
+                'orderby' => 'ID',
+                'order' => 'ASC'
+            ));
+            
+            $success = 0;
+            $failed = 0;
+            
+            foreach ($posts as $post) {
+                try {
+                    if ($this->index_single_post($post->ID, $post)) {
+                        $success++;
+                    } else {
+                        $failed++;
+                    }
+                } catch (Exception $e) {
+                    error_log('CJR Chatbot: Error indexing post ' . $post->ID . ' - ' . $e->getMessage());
+                    $failed++;
+                }
+                
+                // Small delay to avoid rate limiting
+                usleep(100000); // 0.1 second
+            }
+            
+            $processed = count($posts);
+            $new_offset = $offset + $processed;
+            
+            wp_send_json_success(array(
+                'processed' => $processed,
+                'success' => $success,
+                'failed' => $failed,
+                'offset' => $new_offset,
+                'has_more' => $processed === $batch_size
+            ));
+        } catch (Exception $e) {
+            error_log('CJR Chatbot: Batch index error - ' . $e->getMessage());
+            wp_send_json_error(array('message' => __('Indexing error: ', 'cjr-chatbot') . $e->getMessage()));
         }
-        
-        $processed = count($posts);
-        $new_offset = $offset + $processed;
-        
-        wp_send_json_success(array(
-            'processed' => $processed,
-            'success' => $success,
-            'failed' => $failed,
-            'offset' => $new_offset,
-            'has_more' => $processed === $batch_size
-        ));
     }
     
     /**
