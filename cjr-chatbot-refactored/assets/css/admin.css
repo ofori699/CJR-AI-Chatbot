@@ -1,0 +1,163 @@
+/**
+ * Admin Styles
+ *
+ * @package CJR_Chatbot
+ */
+
+.cjr-chatbot-settings {
+    max-width: 1000px;
+}
+
+.cjr-settings-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.cjr-settings-section h2 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.cjr-index-stats {
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 4px solid #940035;
+    margin-bottom: 15px;
+}
+
+.cjr-progress-container {
+    margin: 15px 0;
+}
+
+.cjr-progress-bar {
+    width: 100%;
+    height: 30px;
+    background: #e0e0e0;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.cjr-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #940035 0%, #c40045 100%);
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.cjr-progress-text {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+/* Q&A Management */
+.cjr-qa-container {
+    max-width: 1200px;
+}
+
+.cjr-qa-form-section {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+.cjr-qa-form-section h2 {
+    margin-top: 0;
+}
+
+.cjr-qa-form .required {
+    color: #d63638;
+}
+
+#cjr-qa-message {
+    margin: 15px 0;
+    padding: 12px;
+    border-left: 4px solid;
+    border-radius: 2px;
+}
+
+#cjr-qa-message.success {
+    border-color: #00a32a;
+    background: #dff0d8;
+    color: #2c6e1f;
+}
+
+#cjr-qa-message.error {
+    border-color: #d63638;
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.cjr-qa-list-section {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+}
+
+.cjr-qa-list-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.cjr-qa-list-section .search-box {
+    margin-bottom: 15px;
+}
+
+.cjr-qa-list-section .search-box input[type="search"] {
+    padding: 6px 10px;
+    width: 300px;
+    margin-right: 5px;
+}
+
+.cjr-delete-qa {
+    color: #d63638;
+}
+
+.cjr-delete-qa:hover {
+    color: #b32d2e;
+    border-color: #b32d2e;
+}
+
+/* Loading Spinner */
+.cjr-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #940035;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cjr-chatbot-settings,
+    .cjr-qa-container {
+        max-width: 100%;
+    }
+    
+    .cjr-qa-list-section .search-box input[type="search"] {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
