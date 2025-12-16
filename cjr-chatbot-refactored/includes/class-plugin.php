@@ -35,12 +35,22 @@ class CJR_Chatbot_Plugin {
      * Load required dependencies
      */
     private function load_dependencies() {
-        // Core classes are autoloaded
-        $this->admin = new CJR_Chatbot_Admin();
-        $this->frontend = new CJR_Chatbot_Frontend();
-        $this->rest_api = new CJR_Chatbot_REST_API();
-        $this->indexer = new CJR_Chatbot_Indexer();
-        $this->security = new CJR_Chatbot_Security();
+        try {
+            // Core classes are autoloaded
+            $this->admin = new CJR_Chatbot_Admin();
+            $this->frontend = new CJR_Chatbot_Frontend();
+            $this->rest_api = new CJR_Chatbot_REST_API();
+            $this->indexer = new CJR_Chatbot_Indexer();
+            $this->security = new CJR_Chatbot_Security();
+        } catch (Exception $e) {
+            error_log('CJR Chatbot: Failed to load dependencies - ' . $e->getMessage());
+            add_action('admin_notices', function() use ($e) {
+                echo '<div class="notice notice-error"><p>';
+                echo esc_html__('CJR Chatbot plugin encountered an error:', 'cjr-chatbot') . ' ';
+                echo esc_html($e->getMessage());
+                echo '</p></div>';
+            });
+        }
     }
     
     /**

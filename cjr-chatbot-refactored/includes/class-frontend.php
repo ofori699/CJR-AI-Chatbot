@@ -46,6 +46,7 @@ class CJR_Chatbot_Frontend {
                 'typing' => __('Bot is typing...', 'cjr-chatbot'),
                 'error' => __('⚠️ Error, please try again.', 'cjr-chatbot'),
                 'networkError' => __('⚠️ Network error. Please check your connection.', 'cjr-chatbot'),
+                'rateLimit' => __('⚠️ Too many requests. Please wait a moment and try again.', 'cjr-chatbot'),
                 'placeholder' => __('Ask a question...', 'cjr-chatbot'),
                 'send' => __('Send', 'cjr-chatbot'),
                 'welcome' => __('👋 Hello! How can I help you with the Center for Justice Research today?', 'cjr-chatbot'),
@@ -61,7 +62,16 @@ class CJR_Chatbot_Frontend {
             return;
         }
         
-        include CJR_CHATBOT_PLUGIN_DIR . 'includes/templates/chat-widget.php';
+        try {
+            $template_path = CJR_CHATBOT_PLUGIN_DIR . 'includes/templates/chat-widget.php';
+            if (file_exists($template_path)) {
+                include $template_path;
+            } else {
+                error_log('CJR Chatbot: Widget template not found at ' . $template_path);
+            }
+        } catch (Exception $e) {
+            error_log('CJR Chatbot: Error rendering widget - ' . $e->getMessage());
+        }
     }
     
     /**
@@ -69,7 +79,18 @@ class CJR_Chatbot_Frontend {
      */
     public function chatbot_shortcode($atts) {
         ob_start();
-        include CJR_CHATBOT_PLUGIN_DIR . 'includes/templates/chat-widget.php';
+        try {
+            $template_path = CJR_CHATBOT_PLUGIN_DIR . 'includes/templates/chat-widget.php';
+            if (file_exists($template_path)) {
+                include $template_path;
+            } else {
+                error_log('CJR Chatbot: Widget template not found at ' . $template_path);
+                echo '<p>' . esc_html__('Chatbot widget unavailable.', 'cjr-chatbot') . '</p>';
+            }
+        } catch (Exception $e) {
+            error_log('CJR Chatbot: Error rendering shortcode - ' . $e->getMessage());
+            echo '<p>' . esc_html__('Chatbot widget error.', 'cjr-chatbot') . '</p>';
+        }
         return ob_get_clean();
     }
 }
